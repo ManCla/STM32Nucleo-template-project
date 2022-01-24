@@ -1,19 +1,20 @@
 #include <string.h>
+#include <stdio.h>
 
-int flag = 0;
+const int period = 1000; // thread period in ticks
 
 void hello (void *uart){
     while (1){
-        vTaskDelay(2000);
-        char msg[] = "bellazz\n\r";
-        HAL_UART_Transmit(uart, (uint8_t *)msg, strlen(msg), 0xFFFF);
-        if (flag) {
-            HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET); 
-            flag = 0;
-        } else {
-            HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET); 
-            flag = 1;
-        }
+        // timing code
+        TickType_t lastWakeTime = xTaskGetTickCount();
+        vTaskDelayUntil(&lastWakeTime, period);
         
+        // count periods
+        char msg[36];
+        sprintf(msg, "-%ld-\n\r", lastWakeTime/period);
+        HAL_UART_Transmit(uart, (uint8_t *)msg, strlen(msg), 0xFFFF);
+
+        //toggle led
+        HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
     }
 }
