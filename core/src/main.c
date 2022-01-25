@@ -55,8 +55,9 @@ int main(void)
   MX_USART2_UART_Init();
 
   /* task creation */
-  xTaskCreate( echo, "receive", 1000, &huart2, 5, NULL);
-  xTaskCreate(count,   "count", 1000, &huart2, 1, NULL);
+  xTaskCreate(  display, "disp", 1000, &huart2, 3, NULL);
+  xTaskCreate(  climbUP,   "up", 1000, NULL,    4, NULL);
+  xTaskCreate(climbDOWN, "down", 1000, NULL,    2, NULL);
 
   /* Start scheduler */
   vTaskStartScheduler();
