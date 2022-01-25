@@ -26,22 +26,22 @@ core/src/main.c \
 core/src/freertos.c \
 core/src/stm32f4xx_it.c \
 core/src/stm32f4xx_hal_msp.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal_rcc.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal_rcc_ex.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal_flash.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal_flash_ex.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal_flash_ramfunc.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal_gpio.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal_dma_ex.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal_dma.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal_pwr.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal_pwr_ex.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal_cortex.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal_exti.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal_tim.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal_tim_ex.c \
-drivers/STM32F4xx_HAL_Driver/src/stm32f4xx_hal_uart.c \
+drivers/hal/src/stm32f4xx_hal_rcc.c \
+drivers/hal/src/stm32f4xx_hal_rcc_ex.c \
+drivers/hal/src/stm32f4xx_hal_flash.c \
+drivers/hal/src/stm32f4xx_hal_flash_ex.c \
+drivers/hal/src/stm32f4xx_hal_flash_ramfunc.c \
+drivers/hal/src/stm32f4xx_hal_gpio.c \
+drivers/hal/src/stm32f4xx_hal_dma_ex.c \
+drivers/hal/src/stm32f4xx_hal_dma.c \
+drivers/hal/src/stm32f4xx_hal_pwr.c \
+drivers/hal/src/stm32f4xx_hal_pwr_ex.c \
+drivers/hal/src/stm32f4xx_hal_cortex.c \
+drivers/hal/src/stm32f4xx_hal.c \
+drivers/hal/src/stm32f4xx_hal_exti.c \
+drivers/hal/src/stm32f4xx_hal_tim.c \
+drivers/hal/src/stm32f4xx_hal_tim_ex.c \
+drivers/hal/src/stm32f4xx_hal_uart.c \
 core/src/system_stm32f4xx.c \
 ThirdParty/FreeRTOS/Source/croutine.c \
 ThirdParty/FreeRTOS/Source/event_groups.c \
@@ -50,7 +50,6 @@ ThirdParty/FreeRTOS/Source/queue.c \
 ThirdParty/FreeRTOS/Source/stream_buffer.c \
 ThirdParty/FreeRTOS/Source/tasks.c \
 ThirdParty/FreeRTOS/Source/timers.c \
-ThirdParty/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c \
 ThirdParty/FreeRTOS/Source/portable/MemMang/heap_4.c \
 ThirdParty/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
 
@@ -103,13 +102,11 @@ AS_INCLUDES =  \
 # C includes
 C_INCLUDES =  \
 -Icore/inc \
--Idrivers/STM32F4xx_HAL_Driver/inc \
--Idrivers/STM32F4xx_HAL_Driver/inc/Legacy \
+-Idrivers/hal/inc \
+-Idrivers/hal/inc/Legacy \
 -IThirdParty/FreeRTOS/Source/include \
--IThirdParty/FreeRTOS/Source/CMSIS_RTOS_V2 \
 -IThirdParty/FreeRTOS/Source/portable/GCC/ARM_CM4F \
--Idrivers/CMSIS/Device/ST/STM32F4xx/Include \
--Idrivers/CMSIS/Include
+-Idrivers/core
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
