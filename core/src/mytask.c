@@ -4,9 +4,11 @@
 const int period = 1000; // thread period in ticks
 
 void hello (void *uart){
+    
+    TickType_t lastWakeTime = xTaskGetTickCount();
+        
     while (1){
         // timing code
-        TickType_t lastWakeTime = xTaskGetTickCount();
         vTaskDelayUntil(&lastWakeTime, period);
         
         // count periods
