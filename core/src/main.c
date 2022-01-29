@@ -11,7 +11,6 @@
 /* Private macro -------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
-UART_HandleTypeDef huart2;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -37,9 +36,11 @@ int main(void)
   MX_USART2_UART_Init();
 
   /* task creation */
-  xTaskCreate(    boss,     "boss", 1000, &huart2, 2, NULL);
-  xTaskCreate(employee, "employee", 1000, &huart2, 1, NULL);
-
+  TaskHandle_t prd1=NULL, prd2=NULL, cons=NULL;
+  xTaskCreate(  consumer, "con", 1000,    NULL, 2, &cons);
+  xTaskCreate( producer1,  "p1", 1000,    cons, 1, &prd1);
+  xTaskCreate( producer2,  "p2", 1000,    cons, 2, &prd2);
+  
   /* Start scheduler */
   vTaskStartScheduler();
 

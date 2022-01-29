@@ -1,42 +1,56 @@
 #include <string.h>
 #include <stdio.h>
+#include "main.h"
 
-const int period_boss = 1000; // thread period in ticks
+const int period_p1 = 1000; // thread period in ticks
+const int period_p2 = 5000; // thread period in ticks
+UART_HandleTypeDef huart2;
 
-SemaphoreHandle_t smph;
-
-void boss (void *uart){
-    
+void producer1 (void * consumer){    
     TickType_t lastWakeTime = xTaskGetTickCount();
-    smph = xSemaphoreCreateBinary();
 
     while (1){
         // timing code
-        vTaskDelayUntil(&lastWakeTime, period_boss);
+        vTaskDelayUntil(&lastWakeTime, period_p1);
         
         // count periods
         char msg[36];
-        sprintf(msg, "BOSS:     -%ld-: toggle! \n\r", lastWakeTime/period_boss);
-        HAL_UART_Transmit(uart, (uint8_t *)msg, strlen(msg), 0xFFFF);
-        xSemaphoreGive(smph);
+        sprintf(msg, "Producer 1 awake \n\r");
+        HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), 0xFFFF);
+        xTaskNotify((TaskHandle_t)consumer, 2, eSetBits);
     }
 }
 
-void employee (void *uart) {
-
-    int smph_timeout = 500; // control how many times else branch is taken
+void producer2 (void * consumer){    
+    TickType_t lastWakeTime = xTaskGetTickCount();
 
     while (1){
-        if (xSemaphoreTake(smph, smph_timeout)) {
-            //toggle led
-            HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-            char msg[36];
-            sprintf(msg, "EMPLOYEE: toggled LED \n\r");
-            HAL_UART_Transmit(uart, (uint8_t *)msg, strlen(msg), 0xFFFF);
-        } else {
-            char msg[36];
-            sprintf(msg, "EMPLOYEE: no semaphore for me \n\r");
-            HAL_UART_Transmit(uart, (uint8_t *)msg, strlen(msg), 0xFFFF);
+        // timing code
+        vTaskDelayUntil(&lastWakeTime, period_p2);
+        
+        // count periods
+        char msg[36];
+        sprintf(msg, "Producer 2 awake \n\r");
+        HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), 0xFFFF);
+        xTaskNotify((TaskHandle_t)consumer, 1, eSetBits);
+    }
+}
+
+void consumer (void *uart) {
+    // HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+    char msg[36] = "";
+    uint32_t read = 0;
+
+    while (1){
+        xTaskNotifyWait( 0x00, 0xFF, &read, 50 );
+        if (read==1) {
+            sprintf(msg, "Notified by 1 \n\r");
+            HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), 0xFFFF);
         }
+        if (read==2) {
+            sprintf(msg, "Notified by 2 \n\r");
+            HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), 0xFFFF);
+        }
+        read = 0;
     }
 }
