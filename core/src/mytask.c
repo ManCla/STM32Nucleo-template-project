@@ -17,7 +17,7 @@ void producer1 (void * consumer){
         char msg[36];
         sprintf(msg, "Producer 1 awake \n\r");
         HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), 0xFFFF);
-        xTaskNotify((TaskHandle_t)consumer, 2, eSetBits);
+        xTaskNotify((TaskHandle_t)consumer, 1, eSetBits);
     }
 }
 
@@ -32,7 +32,7 @@ void producer2 (void * consumer){
         char msg[36];
         sprintf(msg, "Producer 2 awake \n\r");
         HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), 0xFFFF);
-        xTaskNotify((TaskHandle_t)consumer, 1, eSetBits);
+        xTaskNotify((TaskHandle_t)consumer, 2, eSetBits);
     }
 }
 

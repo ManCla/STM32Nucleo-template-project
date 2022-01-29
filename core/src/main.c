@@ -37,9 +37,9 @@ int main(void)
 
   /* task creation */
   TaskHandle_t prd1=NULL, prd2=NULL, cons=NULL;
-  xTaskCreate(  consumer, "con", 1000,    NULL, 2, &cons);
+  xTaskCreate(  consumer, "con", 1000,    NULL, 3, &cons);
   xTaskCreate( producer1,  "p1", 1000,    cons, 1, &prd1);
-  xTaskCreate( producer2,  "p2", 1000,    cons, 2, &prd2);
+  xTaskCreate( producer2,  "p2", 1000,    cons, 1, &prd2);
   
   /* Start scheduler */
   vTaskStartScheduler();
