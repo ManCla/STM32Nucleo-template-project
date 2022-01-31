@@ -8,8 +8,7 @@ SemaphoreHandle_t smph;
 void boss (void *uart){
     
     TickType_t lastWakeTime = xTaskGetTickCount();
-    smph = xSemaphoreCreateBinary();
-
+    
     while (1){
         // timing code
         vTaskDelayUntil(&lastWakeTime, period_boss);
