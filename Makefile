@@ -193,7 +193,7 @@ connect:
 # open comm with openocd and debug with gdb (in two different terminals)
 #######################################
 openocd:
-	openocd -d2 -f board/st_nucleo_f4.cfg -c init -c targets -c "\$$_TARGETNAME configure -rtos FreeRTOS"
+	openocd -d2 -f board/st_nucleo_f4.cfg -c init -c targets -c "\$$_TARGETNAME configure -rtos auto"
 
 gdb: $(BUILD_DIR)/$(TARGET).elf
 	$(PREFIX)gdb -ex "target extended-remote localhost:3333" -ex "monitor reset halt" $^
