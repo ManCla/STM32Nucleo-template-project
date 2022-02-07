@@ -21,7 +21,7 @@ void hello (void *uart){
     }
 }
 
-void compute1 (){
+void compute (){
     TickType_t lastWakeTime = xTaskGetTickCount();
         
     while (1){
