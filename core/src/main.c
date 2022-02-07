@@ -18,6 +18,13 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 
+/* Tracing Function -----------------------------------------------------------*/
+void vTracingPrint (int i){
+  char msg[36];
+  sprintf(msg, "-%d-\n\r", i);
+  HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), 0xFFFF);
+}
+
 /**
   * @brief  The application entry point.
   * @retval int
@@ -38,6 +45,7 @@ int main(void)
 
   /* task creation */
   xTaskCreate(hello, "hello", 1000, &huart2, 1, NULL);
+  xTaskCreate(   t1,    "t1", 1000,    NULL, 1, NULL);
 
   /* Start scheduler */
   vTaskStartScheduler();

@@ -4,18 +4,24 @@
 const int period = 1000; // thread period in ticks
 
 void hello (void *uart){
-    
+    vTaskSetApplicationTaskTag( NULL, ( void * ) 5 );
     TickType_t lastWakeTime = xTaskGetTickCount();
         
     while (1){
         // timing code
         vTaskDelayUntil(&lastWakeTime, period);
-        
-        // count periods
-        char msg[36];
-        sprintf(msg, "-%ld-\n\r", lastWakeTime/period);
-        HAL_UART_Transmit(uart, (uint8_t *)msg, strlen(msg), 0xFFFF);
 
+    }
+}
+
+void t1 (void *uart){
+    vTaskSetApplicationTaskTag( NULL, ( void * ) 1 );
+    TickType_t lastWakeTime = xTaskGetTickCount();
+
+    while (1){
+        // timing code
+        vTaskDelayUntil(&lastWakeTime, period);
+        
         //toggle led
         HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
     }
