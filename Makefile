@@ -43,6 +43,7 @@ drivers/hal/src/stm32f4xx_hal_tim.c \
 drivers/hal/src/stm32f4xx_hal_tim_ex.c \
 drivers/hal/src/stm32f4xx_hal_uart.c \
 core/src/system_stm32f4xx.c \
+core/src/FreeRTOS-openocd.c \
 ThirdParty/FreeRTOS/Source/croutine.c \
 ThirdParty/FreeRTOS/Source/event_groups.c \
 ThirdParty/FreeRTOS/Source/list.c \
@@ -127,7 +128,7 @@ LDSCRIPT = STM32F446RETx_FLASH.ld
 # libraries
 LIBS = -lc -lm -lnosys 
 LIBDIR = 
-LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
+LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,``--undefined=uxTopUsedPriority''
 
 #######################################
 # targets
@@ -192,9 +193,9 @@ connect:
 # open comm with openocd and debug with gdb (in two different terminals)
 #######################################
 openocd:
-	openocd -d2 -f board/st_nucleo_f4.cfg -c init -c targets -c "\$$_TARGETNAME configure -rtos auto"
+	openocd -d2 -f board/st_nucleo_f4.cfg -c init -c targets -c "\$$_TARGETNAME configure -rtos FreeRTOS"
 
 gdb: $(BUILD_DIR)/$(TARGET).elf
-	$(PREFIX)gdb -ex "target remote localhost:3333" -ex "monitor reset halt" $^
+	$(PREFIX)gdb -ex "target extended-remote localhost:3333" -ex "monitor reset halt" $^
 
 
