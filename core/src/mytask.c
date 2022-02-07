@@ -37,7 +37,6 @@ void producer2 (void * consumer){
 }
 
 void consumer (void *uart) {
-    // HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
     char msg[36] = "";
     uint32_t read = 0;
 
