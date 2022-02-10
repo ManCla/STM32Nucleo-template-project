@@ -20,28 +20,3 @@ void hello (void *uart){
         HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
     }
 }
-
-void compute (){
-    TickType_t lastWakeTime = xTaskGetTickCount();
-        
-    while (1){
-        // timing code
-        vTaskDelayUntil(&lastWakeTime, period);
-
-        int busy = 500 + xTaskGetTickCount();
-        int i=0;
-        while (xTaskGetTickCount()<busy){
-            i++;
-        }
-        factorial(10);
-    }
-}
-
-int factorial(int i ){
-    if (i<=1){
-        return i;
-    } else {
-        return i*factorial(i-1);
-    }
-
-}
