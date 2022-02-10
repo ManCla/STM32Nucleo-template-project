@@ -33,6 +33,15 @@ void compute (){
         while (xTaskGetTickCount()<busy){
             i++;
         }
+        factorial(10);
     }
 }
 
+int factorial(int i ){
+    if (i<=1){
+        return i;
+    } else {
+        return i*factorial(i-1);
+    }
+
+}
