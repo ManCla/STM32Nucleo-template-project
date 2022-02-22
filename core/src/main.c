@@ -7,6 +7,7 @@
 /* Private typedef -----------------------------------------------------------*/
 
 /* Private define ------------------------------------------------------------*/
+#define DEFAULT_STACK_SIZE 1024
 
 /* Private macro -------------------------------------------------------------*/
 
@@ -37,7 +38,11 @@ int main(void)
   MX_USART2_UART_Init();
 
   /* task creation */
-  xTaskCreate(  hello,   "hello", 512, &huart2, 1, NULL);
+  xTaskCreate(  print, "print", DEFAULT_STACK_SIZE, &huart2, 2, NULL);
+  // xTaskCreate(  IncrementCounterPointer,
+  //                    "counter", DEFAULT_STACK_SIZE, NULL,    1, NULL);
+  xTaskCreate(  IncrementCounter,
+                     "counter", DEFAULT_STACK_SIZE, NULL, 1, NULL);
   
   /* Start scheduler */
   vTaskStartScheduler();
