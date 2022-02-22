@@ -3,7 +3,7 @@
 
 const int period = 1000; // thread period in ticks
 
-unsigned long int* pt_counter = 0;
+unsigned long int* pt_counter = NULL;
 unsigned long int counter = 0 ;
 
 void print (void *uart){
