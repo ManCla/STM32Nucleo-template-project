@@ -29,7 +29,6 @@ void print (void *uart){
         HAL_UART_Transmit(uart, (uint8_t *)msg, strlen(msg), 0xFFFF);
         // toggle led
         HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-
     }
 }
 
