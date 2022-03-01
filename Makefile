@@ -179,10 +179,13 @@ clean:
 	-rm -fR $(BUILD_DIR)
 
 #######################################
-# display serial comm with usb cable
+# display serial comm 
+# default is to use minicom (setup by running 'minicom -s')
+# otherwise you can use cu with the following command:
+# 	 sudo cu -s 115200 -l /dev/tty.usbmodem141303
 #######################################
 connect:
-	sudo cu -s 115200 -l /dev/tty.usbmodem141303
+	minicom 
 
 #######################################
 # dependencies
