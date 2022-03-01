@@ -37,8 +37,8 @@ int main(void)
   MX_USART2_UART_Init();
 
   /* task creation */
-  xTaskCreate(  hello,   "hello", 512, &huart2, 1, NULL);
-  
+  xTaskCreate(  receive,   "receive", 512, &huart2, 1, NULL);
+    
   /* Start scheduler */
   vTaskStartScheduler();
 
