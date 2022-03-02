@@ -14,7 +14,7 @@ SemaphoreHandle_t printSemaphore; // semaphore to signal printing
 void server (void *uart){
     
     // create input queue and printing semaphore
-    inQueue   = xQueueCreate( BUFFER_LENGTH, sizeof( char ) );
+    inQueue        = xQueueCreate( BUFFER_LENGTH, sizeof( char ) );
     printSemaphore = xSemaphoreCreateBinary();
 
     // assuming creation of queue and semaphore was successful
@@ -23,10 +23,10 @@ void server (void *uart){
 
         // prompt message
         char msg[64];
-        sprintf(msg, "\n\rwrite something:\n\r");
+        sprintf(msg, "\n\r>> write something:\n\r");
         HAL_UART_Transmit(uart, (void*)msg, strlen(msg), 0xFFFF);
 
-        // read chars one by one
+        // read chars one by one till user hit enter
         char read;
         do {
             HAL_UART_Receive(uart, (void*)&read, 1, 0xFFFF);
@@ -36,8 +36,8 @@ void server (void *uart){
             }
         } while (read != '\r');
 
-        xSemaphoreGive(printSemaphore);
-        vTaskDelay(period);
+        xSemaphoreGive(printSemaphore);  // give semaphore to start print
+        vTaskDelay(10);                  // this is surprisingly important
 
         //toggle led each time we have finished receiving a string
         HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
@@ -47,16 +47,18 @@ void server (void *uart){
 
 
 void printer (void *uart){
-    char msg[BUFFER_LENGTH+1]; // make sure that there is space for newline char
+    char msg[BUFFER_LENGTH+1]; // make sure that there is space end of string
     int i=0;
-    while ( 1 ) {
 
+    while ( 1 ) {
         if ( xSemaphoreTake(printSemaphore, (TickType_t) 100 ) == pdTRUE ) {
-            i=0;
+            // extract input characters into a string
             while (xQueueReceive(inQueue,msg+i,0)==pdPASS && i<BUFFER_LENGTH) ++i;
-            msg[i]='\r';
+            msg[i]  ='\0'; // add end of string character
+
+            // actual transmission
             HAL_UART_Transmit(uart, (void*)msg, i, 0xFFFF);
-            
+            i=0; // reset counter
         }
     }
 }
