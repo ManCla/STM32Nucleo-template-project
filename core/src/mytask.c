@@ -1,46 +1,62 @@
+#define DEBUG_MESSAGE(x) char err_msg[64]; \
+    sprintf(err_msg, x);        \
+    HAL_UART_Transmit(uart, (void*)err_msg,strlen(err_msg), 0xFFFF);
+
 #include <string.h>
 #include <stdio.h>
 
-const int period = 1000; // thread period in ticks
+const int period = 1000;          // thread period in ticks
+QueueHandle_t readingQueue;       // queue containing incoming bytes
+SemaphoreHandle_t printSemaphore; // semaphore to signal printing
 
-void receive (void *uart){
+void server (void *uart){
     
+    // create input queue and printing semaphore
+    readingQueue   = xQueueCreate( 64, sizeof( char ) );
+    printSemaphore = xSemaphoreCreateBinary();
+
+    // assuming creation of queue and semaphore was successful
+
     while (1){
-        char received[36];
 
         // prompt message
-        char msg[36];
+        char msg[64];
         sprintf(msg, "\n\rwrite something:\n\r");
-        HAL_UART_Transmit(uart, (uint8_t *)msg, strlen(msg), 0xFFFF);
+        HAL_UART_Transmit(uart, (void*)msg, strlen(msg), 0xFFFF);
 
-        // wait for message
+        // read chars one by one
         char read;
-        int i=0;
         do {
-            HAL_UART_Receive(uart, (uint8_t*) &read, 1, 0xFFFF);
-            received[i]=read;
-            i++;
+            HAL_UART_Receive(uart, (void*)&read, 1, 0xFFFF);
+            if(xQueueSendToBack(readingQueue, (void *)&read, 0) != pdPASS){
+                DEBUG_MESSAGE("\n\r ### WARNING: input queue is full ### \n\r")
+                break;
+            }
         } while (read != '\r');
 
-        // echo
-        HAL_UART_Transmit(uart, (uint8_t *)received, strlen(received), 0xFFFF);
-        
+        xSemaphoreGive(printSemaphore);
         vTaskDelay(period);
 
-        //toggle led
+        //toggle led each time we have finished receiving a string
         HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 
     }
 }
 
 
-void worker (void *uart){
+void printer (void *uart){
+    char msg;
 
-    while (1){
-        char msg[36];
-        sprintf(msg, "write something\n\r");
-        HAL_UART_Transmit(uart, (uint8_t *)msg, strlen(msg), 0xFFFF);
+    while ( 1 ) {
 
-
+        if ( xSemaphoreTake(printSemaphore, (TickType_t) 100 ) == pdTRUE ) {
+            
+            while (xQueueReceive(readingQueue,&msg,0) == pdPASS){
+                HAL_UART_Transmit(uart, (void*)&msg, 1, 0xFFFF);
+            }
+            msg='\n\r';
+            HAL_UART_Transmit(uart, (void*)&msg, 1, 0xFFFF);
+            xQueueReset(readingQueue);
+        }
     }
 }
