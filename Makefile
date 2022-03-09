@@ -26,6 +26,8 @@ core/src/main.c \
 core/src/freertos.c \
 core/src/stm32f4xx_it.c \
 core/src/stm32f4xx_hal_msp.c \
+drivers/hal/src/stm32f4xx_hal_adc.c \
+drivers/hal/src/stm32f4xx_hal_adc_ex.c\
 drivers/hal/src/stm32f4xx_hal_rcc.c \
 drivers/hal/src/stm32f4xx_hal_rcc_ex.c \
 drivers/hal/src/stm32f4xx_hal_flash.c \
@@ -42,6 +44,7 @@ drivers/hal/src/stm32f4xx_hal_exti.c \
 drivers/hal/src/stm32f4xx_hal_tim.c \
 drivers/hal/src/stm32f4xx_hal_tim_ex.c \
 drivers/hal/src/stm32f4xx_hal_uart.c \
+drivers/hal/src/stm32f4xx_ll_adc.c \
 core/src/system_stm32f4xx.c \
 core/src/FreeRTOS-openocd.c \
 ThirdParty/FreeRTOS/Source/croutine.c \
